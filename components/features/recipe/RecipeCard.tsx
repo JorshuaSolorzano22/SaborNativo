@@ -12,19 +12,29 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-white">
       <CardContent className="p-0">
         <div className="aspect-video relative">
-          <Image src={recipe.image} alt={recipe.title} fill className="object-cover" />
+          <Image
+            src={recipe.image}
+            alt={recipe.title}
+            fill
+            className="object-cover"
+          />
         </div>
         <div className="p-6">
-          <h4 className="text-xl font-semibold mb-3 text-brand-brown">{recipe.title}</h4>
+          <h4 className="text-xl font-semibold mb-3 text-brand-brown">
+            {recipe.title}
+          </h4>
           <p className="mb-4 text-brand-brown">{recipe.description}</p>
           <div className="flex flex-wrap gap-2 mb-4">
-            {recipe.tags.map(tag => (
-              <span className="px-3 py-1 text-xs rounded-full bg-brand-secondary text-brand-foreground">
+            {recipe.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 text-xs rounded-full bg-brand-secondary text-brand-foreground"
+              >
                 {tag}
               </span>
             ))}
           </div>
-          <Button variant="outline" className="w-full border-brand-green text-brand-green hover:bg-brand-green/10 hover:text-brand-green">
+          <Button className="w-full bg-brand-primary text-white hover:bg-brand-primary/90">
             Ver receta completa
           </Button>
         </div>

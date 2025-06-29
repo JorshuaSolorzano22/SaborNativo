@@ -30,19 +30,54 @@ export interface ContactInfoItem {
 
 // Datos de Productos
 export const products: Product[] = [
-  { id: 1, name: "Miel de abeja pura", price: 8500, image: "/images/miel.jpg", description: "Miel artesanal 100% pura, extraída de colmenas locales en las montañas de Costa Rica." },
-  { id: 2, name: "Café gourmet tostado", price: 12000, image: "/images/cafe.jpg", description: "Café de altura, tostado artesanalmente con notas a chocolate y frutos secos." },
-  { id: 3, name: "Queso artesanal", price: 6500, image: "/images/queso.jpg", description: "Queso fresco elaborado con leche de vacas alimentadas con pasto natural." },
-  { id: 4, name: "Mermelada de mora", price: 4200, image: "/images/mermelada.jpg", description: "Mermelada casera de mora silvestre, sin conservantes artificiales." },
-  { id: 5, name: "Pan integral artesanal", price: 3800, image: "/images/pan.jpg", description: "Pan horneado diariamente con harinas integrales y semillas naturales." },
-  { id: 6, name: "Aceite de oliva extra", price: 15000, image: "/images/aceite.jpg", description: "Aceite de oliva extra virgen, prensado en frío para conservar sus propiedades." },
+  {
+    id: 1,
+    name: "Miel de Abeja",
+    price: 7500,
+    image: "/miel.jpg",
+    description: "Miel artesanal 100% pura, recolectada de colmenas locales en Costa Rica.",
+  },
+  {
+    id: 2,
+    name: "Chimichurri Argentino",
+    price: 5000,
+    image: "/chimichurri.webp",
+    description: "Receta tradicional argentina con hierbas frescas y especias auténticas.",
+  },
+  {
+    id: 3,
+    name: "Pesto",
+    price: 6200,
+    image: "/pesto.jpg",
+    description: "Pesto casero preparado con albahaca fresca, nueces y aceite de oliva.",
+  },
+  {
+    id: 4,
+    name: "Mermelada de Mora",
+    price: 4200,
+    image: "/mermelada.jpg",
+    description: "Mermelada artesanal hecha con moras silvestres, sin conservantes.",
+  },
+  {
+    id: 5,
+    name: "Mantequilla Saborizada",
+    price: 3800,
+    image: "/mantequilla.jpg",
+    description: "Mantequilla cremosa infusionada con hierbas y especias naturales.",
+  },
+  {
+    id: 6,
+    name: "Pasta de Ajo",
+    price: 2500,
+    image: "/pastaAjo.jpg",
+    description: "Pasta de ajo artesanal, perfecta para untar o cocinar.",
+  },
 ];
-
 // Datos de Recetas (ejemplo)
 export const recipes: Recipe[] = [
-    { title: "Pan tostado con miel y queso", description: "Un desayuno perfecto combinando nuestro pan integral, miel pura y queso artesanal.", image: "/images/receta-pan.jpg", tags: ["15 min", "Fácil"] },
-    { title: "Pasta con chimichurri artesanal", description: "Una fusión deliciosa de pasta italiana con nuestro chimichurri estilo argentino.", image: "/images/receta-pasta.jpg", tags: ["25 min", "Intermedio"] },
-    { title: "Tostadas gourmet con mermelada", description: "Disfruta de nuestro pan integral tostado con mermelada casera de mora.", image: "/images/receta-tostadas.jpg", tags: ["10 min", "Muy fácil"] }
+    { title: "Pasta con pesto y pollo", description: "Una receta cremosa y sabrosa donde la pasta se mezcla con pollo salteado y pesto de albahaca, creando un platillo rápido, aromático y lleno de sabor mediterráneo..", image: "/images/pasta.avif", tags: ["15 min", "Fácil"] },
+    { title: " Maíz asado con mantequilla de hierbas", description: "Mazorcas calientes y asadas, untadas con mantequilla aromática. Una delicia para disfrutar como acompañamiento o en reuniones informales.", image: "/images/maiz.jpeg", tags: ["25 min", "Intermedio"] },
+    { title: "Tostadas gourmet con mermelada", description: "Disfruta de nuestro pan integral tostado con mermelada casera de mora.", image: "/images/tostada.jpg", tags: ["10 min", "Muy fácil"] }
 ];
 
 // Datos de "Nosotros"

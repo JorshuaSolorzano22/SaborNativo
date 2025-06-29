@@ -14,15 +14,15 @@ const navLinks = [
 
 const Logo = () => (
 
-  <Link href="/" className="hover:opacity-75 transition-opacity text-brand-foreground">
-    <div className="mr-3">
-      {/* Tu SVG del logo aquí */}
+  <Link href="/" className="hover:opacity-75 transition-opacity text-brand-foreground flex items-center gap-2">
+    <div className="flex-shrink-0">
+      {/* SVG Hoja verde */}
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C12 2 7 4 7 12C7 16 9 18 12 18C15 18 17 16 17 12C17 4 12 2 12 2Z" fill="#7A8751" />
         <path d="M12 18C12 18 8 16 8 12" stroke="#5C4A3B" strokeWidth="1" fill="none" />
       </svg>
     </div>
-    <h1 className="text-2xl font-bold text-brand-brown group-hover:opacity-80 transition-opacity">
+    <h1 className="text-2xl font-bold text-brand-foreground">
       Sabor nativo
     </h1>
   </Link>
