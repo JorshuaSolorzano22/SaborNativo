@@ -6,8 +6,8 @@ const ValueCard = ({ item }: { item: ValueProposition }) => (
     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-brand-primary">
       <div className="text-white text-2xl">{item.icon}</div>
     </div>
-    <h4 className="text-xl font-semibold mb-2 text-foreground">{item.title}</h4>
-    <p className="text-foreground">{item.description}</p>
+    <h4 className="text-xl font-semibold mb-2 text-brand-foreground">{item.title}</h4>
+    <p className="text-brand-foreground">{item.description}</p>
   </div>
 );
 

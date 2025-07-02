@@ -1,7 +1,6 @@
-// tailwind.config.js
+import type { Config } from 'tailwindcss'
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config: Config = {
   darkMode: ["class"],
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -18,7 +17,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        // --- DEFINIMOS LOS COLORES DE LA MARCA DIRECTAMENTE ---
         'brand-background': '#F6F1EB',
         'brand-foreground': '#5C4A3B',
         'brand-primary': '#7A8751',
@@ -26,7 +24,6 @@ module.exports = {
         'brand-border': '#DAD5CE',
         'brand-whatsapp': '#25D366',
         
-        // --- Y TAMBIÉN DEFINIMOS LOS COLORES DE SHADCN/UI USANDO ESAS VARIABLES ---
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -66,7 +63,6 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-     
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -81,7 +77,9 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+    },
   },
   plugins: [require("tailwindcss-animate")],
 }
-}
+
+export default config

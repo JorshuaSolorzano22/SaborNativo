@@ -20,10 +20,10 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           />
         </div>
         <div className="p-6">
-          <h4 className="text-xl font-semibold mb-3 text-brand-brown">
+          <h4 className="text-xl font-semibold mb-3 text-brand-foreground">
             {recipe.title}
           </h4>
-          <p className="mb-4 text-brand-brown">{recipe.description}</p>
+          <p className="mb-4 text-brand-foreground">{recipe.description}</p>
           <div className="flex flex-wrap gap-2 mb-4">
             {recipe.tags.map((tag, index) => (
               <span
