@@ -140,7 +140,7 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <span className="text-sm" style={{ color: "#5C4A3B" }}>
                 ¿No tienes cuenta?{" "}
-                <a href="#" className="font-semibold hover:underline transition-all" style={{ color: "#7A8751" }}>
+                <a href="/admin" className="font-semibold hover:underline transition-all" style={{ color: "#7A8751" }}>
                   Regístrate aquí
                 </a>
               </span>
