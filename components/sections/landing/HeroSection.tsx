@@ -28,12 +28,12 @@ export function HeroSection() {
             <div className="flex items-center justify-center lg:justify-start mb-6">
               <HeroLogo />
               <div>
-                <h1 className="text-5xl md:text-6xl font-bold leading-tight text-foreground">Sabor</h1>
-                <h1 className="text-5xl md:text-6xl font-bold leading-tight -mt-3 text-foreground">nativo</h1>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight text-brand-foreground">Sabor</h1>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight -mt-3 text-brand-foreground">nativo</h1>
               </div>
             </div>
             <div>
-              <p className="text-2xl md:text-3xl leading-relaxed font-bold max-w-lg mx-auto lg:mx-0 text-foreground">
+              <p className="text-2xl md:text-3xl leading-relaxed font-bold max-w-lg mx-auto lg:mx-0 text-brand-foreground">
                 Sabores que nacen del alma de la cocina
               </p>
             </div>

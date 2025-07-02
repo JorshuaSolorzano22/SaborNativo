@@ -14,11 +14,11 @@ export function ContactForm() {
   return (
     <Card className="bg-white">
       <CardContent className="p-6">
-        <h4 className="text-xl font-semibold mb-6 text-brand-brown">Envíanos un mensaje</h4>
+        <h4 className="text-xl font-semibold mb-6 text-brand-foreground">Envíanos un mensaje</h4>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-brand-brown">Nombre</label>
+              <label className="block text-sm font-medium mb-2 text-brand-foreground">Nombre</label>
               <Input
                 type="text"
                 placeholder="Tu nombre"
@@ -26,7 +26,7 @@ export function ContactForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-brand-brown">Email</label>
+              <label className="block text-sm font-medium mb-2 text-brand-foreground">Email</label>
               <Input
                 type="email"
                 placeholder="tu@email.com"
@@ -35,7 +35,7 @@ export function ContactForm() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-brand-brown">Teléfono</label>
+            <label className="block text-sm font-medium mb-2 text-brand-foreground">Teléfono</label>
             <Input
               type="tel"
               placeholder="+506 1234-5678"
@@ -43,7 +43,7 @@ export function ContactForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-brand-brown">Mensaje</label>
+            <label className="block text-sm font-medium mb-2 text-brand-foreground">Mensaje.</label>
             <Textarea
               rows={4}
               placeholder="Cuéntanos en qué podemos ayudarte..."

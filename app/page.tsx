@@ -6,8 +6,7 @@ import { AboutUsSection } from "@/components/sections/landing/AboutUsSection";
 import { RecipesSection } from "@/components/sections/landing/RecipesSection";
 import { ContactSection } from "@/components/sections/landing/ContactSection";
 import { WhatsappCTA } from "@/components/sections/landing/WhatsappCTA";
-import { Footer } from "@/components/layout/Footer";
-import './globals.css' 
+import { Footer } from "@/components/layout/Footer"; 
 
 export default function HomePage() {
   return (

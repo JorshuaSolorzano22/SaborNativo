@@ -8,8 +8,8 @@ const ContactInfoCard = ({ item }: { item: ContactInfoItem }) => (
       <div className="text-white text-xl">{item.icon}</div>
     </div>
     <div>
-      <h4 className="text-lg font-semibold mb-2 text-brand-brown">{item.title}</h4>
-      <p className="text-brand-brown">
+      <h4 className="text-lg font-semibold mb-2 text-brand-foreground">{item.title}</h4>
+      <p className="text-brand-foreground">
         {item.lines.map((line, index) => (
           <span key={index}>
             {line}
