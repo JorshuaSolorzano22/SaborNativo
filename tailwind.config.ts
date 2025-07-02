@@ -18,7 +18,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        // --- DEFINIMOS LOS COLORES DE LA MARCA DIRECTAMENTE ---
         'brand-background': '#F6F1EB',
         'brand-foreground': '#5C4A3B',
         'brand-primary': '#7A8751',
@@ -26,7 +25,6 @@ module.exports = {
         'brand-border': '#DAD5CE',
         'brand-whatsapp': '#25D366',
         
-        // --- Y TAMBIÉN DEFINIMOS LOS COLORES DE SHADCN/UI USANDO ESAS VARIABLES ---
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
