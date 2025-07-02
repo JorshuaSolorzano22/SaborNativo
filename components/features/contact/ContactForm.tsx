@@ -43,7 +43,7 @@ export function ContactForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-brand-foreground">Mensaje</label>
+            <label className="block text-sm font-medium mb-2 text-brand-foreground">Mensaje.</label>
             <Textarea
               rows={4}
               placeholder="Cuéntanos en qué podemos ayudarte..."
