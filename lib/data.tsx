@@ -1,6 +1,6 @@
 import { CreditCard, Layers, Leaf, MapPin, Phone, Mail, Clock } from "lucide-react";
 
-// Tipos para nuestros datos
+
 export interface Product {
   id: number;
   name: string;
@@ -28,7 +28,6 @@ export interface ContactInfoItem {
   lines: string[];
 }
 
-// Datos de Productos
 export const products: Product[] = [
   {
     id: 1,
@@ -95,4 +94,3 @@ export const contactInfo: ContactInfoItem[] = [
   { icon: <Clock className="w-6 h-6 text-white" />, title: "Horarios", lines: ["Lunes a Viernes: 8:00 AM - 6:00 PM", "Sábados: 8:00 AM - 4:00 PM", "Domingos: Cerrado"] },
 ]
 
-// Nota: He reemplazado los SVGs por iconos de lucide-react para mayor consistencia y facilidad. También he cambiado las rutas de las imágenes a un directorio `/images` en la carpeta `public`.

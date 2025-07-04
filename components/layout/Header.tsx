@@ -28,7 +28,6 @@ const Logo = () => (
   </Link>
 );
 
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
