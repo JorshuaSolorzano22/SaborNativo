@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from "firebase/firestore"
 import { db } from "../../firebaseConfig"
 import { Order, ProductIngredients, Ingredient } from "./types"
 
@@ -157,6 +157,38 @@ export const loadIngredientsFromFirebase = async (): Promise<Ingredient[]> => {
   } catch (error) {
     console.error("Error al cargar ingredientes desde Firebase:", error)
     return []
+  }
+}
+
+// Función para crear un nuevo pedido en Firebase
+export const createOrderInFirebase = async (orderData: {
+  cliente: string;
+  productos: Array<{
+    idProducto: string;
+    nombre: string;
+    cantidad: number;
+    precioUnitario: number;
+  }>;
+  totalPedido: number;
+  estadoPedido: string;
+  estadoFacturacion: string;
+  notasEntrega: string;
+  metodoPago: string;
+}) => {
+  try {
+    const ordersCollection = collection(db, "pedido")
+    
+    const newOrder = {
+      ...orderData,
+      fecha: new Date(), // Timestamp actual
+    }
+    
+    const docRef = await addDoc(ordersCollection, newOrder)
+    console.log("Pedido creado con ID:", docRef.id)
+    return { success: true, orderId: docRef.id }
+  } catch (error) {
+    console.error("Error al crear pedido:", error)
+    return { success: false, error: error }
   }
 }
 
