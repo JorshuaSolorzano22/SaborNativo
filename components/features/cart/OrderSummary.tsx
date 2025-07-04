@@ -15,7 +15,7 @@ export function OrderSummary() {
 
   const handleOrder = () => {
     const orderDetails = cartItems
-      .map((item) => `${item.name} x${item.quantity} - ₡${(item.price * item.quantity).toLocaleString()}`)
+      .map((item) => `${item.nombre} x${item.quantity} - ₡${(item.precio * item.quantity).toLocaleString()}`)
       .join("\n");
 
     const paymentMethodText = {
@@ -27,7 +27,7 @@ export function OrderSummary() {
     const message = `¡Hola Sabor Nativo! Me gustaría realizar el siguiente pedido:\n\n${orderDetails}\n\n*Total: ₡${totalPrice.toLocaleString()}*\n\nMétodo de pago: ${paymentMethodText}\n${deliveryNotes ? `Notas de entrega: ${deliveryNotes}` : ""}\n\n¡Gracias!`;
 
     // Reemplaza con tu número de WhatsApp real
-    const whatsappUrl = `https://wa.me/50612345678?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/50687462555?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
 
     // Opcional: limpiar el carrito después de enviar el pedido
@@ -42,8 +42,8 @@ export function OrderSummary() {
           <div className="space-y-2 mb-4 border-b border-brand-border pb-4">
             {cartItems.map((item) => (
               <div key={item.id} className="flex justify-between text-sm text-brand-foreground">
-                <span>{item.name} x{item.quantity}</span>
-                <span>₡{(item.price * item.quantity).toLocaleString()}</span>
+                <span>{item.nombre} x{item.quantity}</span>
+                <span>₡{(item.precio * item.quantity).toLocaleString()}</span>
               </div>
             ))}
           </div>

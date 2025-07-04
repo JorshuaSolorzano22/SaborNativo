@@ -11,12 +11,14 @@ import { db } from "../../../firebaseConfig"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FirebaseProductCard } from "@/components/features/product/FirebaseProductCard" 
-import { useProducts, FirebaseProduct } from "@/hooks/useProducts" 
+import { useProducts, FirebaseProduct } from "@/hooks/useProducts"
+import { useCart } from "@/hooks/useCart" 
 
 export default function ProductDetailPage() {
   const params = useParams()
   const productId = params.id as string
   const { products } = useProducts()
+  const { addToCart } = useCart()
 
   const [product, setProduct] = useState<FirebaseProduct | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,6 +56,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (product) {
+      addToCart(product, quantity)
       console.log(`Agregando ${quantity} unidades de ${product.nombre} al carrito`)
       setQuantity(1)
     }

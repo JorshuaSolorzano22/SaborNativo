@@ -1,17 +1,23 @@
 "use client";
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { Product } from "@/lib/data"; // Usamos el tipo de producto que ya tenemos
+import { FirebaseProduct } from "@/hooks/useProducts";
 
-export interface CartItem extends Product {
+// Interfaz para un item del carrito basado en productos de Firebase
+export interface CartItem {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
   quantity: number;
+  image?: string; // Imagen opcional para compatibilidad
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  updateQuantity: (productId: number, newQuantity: number) => void;
-  removeFromCart: (productId: number) => void;
+  addToCart: (product: FirebaseProduct, quantity?: number) => void;
+  updateQuantity: (productId: string, newQuantity: number) => void;
+  removeFromCart: (productId: string) => void;
   clearCart: () => void;
   totalPrice: number;
   totalItems: number;
@@ -37,7 +43,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("sabor_nativo_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Product, quantity = 1) => {
+  const addToCart = (product: FirebaseProduct, quantity = 1) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       if (existingItem) {
@@ -46,12 +52,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
           item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
-      // Si no existe, lo añade
-      return [...prevItems, { ...product, quantity }];
+      // Si no existe, lo añade con imagen por defecto
+      return [...prevItems, { 
+        ...product, 
+        quantity,
+        image: "/placeholder.jpg" // Imagen por defecto
+      }];
     });
   };
 
-  const updateQuantity = (productId: number, newQuantity: number) => {
+  const updateQuantity = (productId: string, newQuantity: number) => {
     if (newQuantity < 1) {
       removeFromCart(productId);
       return;
@@ -61,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     ));
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (productId: string) => {
     setCartItems(items => items.filter(item => item.id !== productId));
   };
 
@@ -69,7 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartItems([]);
   };
 
-  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce((total, item) => total + item.precio * item.quantity, 0);
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
