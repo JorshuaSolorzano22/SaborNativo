@@ -15,11 +15,11 @@ export function CartItemCard({ item }: CartItemCardProps) {
     <Card className="bg-white">
       <CardContent className="p-4 flex items-center space-x-4">
         <div className="w-20 h-20 relative flex-shrink-0">
-          <Image src={item.image} alt={item.name} fill className="object-cover rounded" />
+          <Image src={item.image || "/placeholder.jpg"} alt={item.nombre} fill className="object-cover rounded" />
         </div>
         <div className="flex-grow">
-          <h3 className="font-semibold text-lg text-brand-foreground">{item.name}</h3>
-          <p className="text-lg font-bold text-brand-primary">₡{item.price.toLocaleString()}</p>
+          <h3 className="font-semibold text-lg text-brand-foreground">{item.nombre}</h3>
+          <p className="text-lg font-bold text-brand-primary">₡{item.precio.toLocaleString()}</p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
@@ -35,7 +35,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
         </Button>
       </CardContent>
       <div className="border-t p-3 text-right">
-        <p className="font-semibold text-brand-foreground">Subtotal: ₡{(item.price * item.quantity).toLocaleString()}</p>
+        <p className="font-semibold text-brand-foreground">Subtotal: ₡{(item.precio * item.quantity).toLocaleString()}</p>
       </div>
     </Card>
   );

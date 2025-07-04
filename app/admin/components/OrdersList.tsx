@@ -1,5 +1,5 @@
 import OrderCard from "./OrderCard"
-import { Order, OrderStatus, PaymentStatus } from "../types"
+import { Order, OrderStatus, PaymentStatus, Ingredient } from "../types"
 
 interface OrdersListProps {
   orders: Order[]
@@ -12,7 +12,7 @@ interface OrdersListProps {
   onRemoveProduct: (orderId: string, productIndex: number) => void
   onSetEditingOrder: (order: Order) => void
   onSetSelectedOrderIngredients: (order: Order) => void
-  productIngredients: any
+  allIngredients: Ingredient[]
   showIngredientsModal: boolean
   onSetShowIngredientsModal: (show: boolean) => void
   selectedOrderIngredients: Order | null
@@ -29,7 +29,7 @@ export default function OrdersList({
   onRemoveProduct,
   onSetEditingOrder,
   onSetSelectedOrderIngredients,
-  productIngredients,
+  allIngredients,
   showIngredientsModal,
   onSetShowIngredientsModal,
   selectedOrderIngredients,
@@ -49,7 +49,7 @@ export default function OrdersList({
           onRemoveProduct={onRemoveProduct}
           onSetEditingOrder={onSetEditingOrder}
           onSetSelectedOrderIngredients={onSetSelectedOrderIngredients}
-          productIngredients={productIngredients}
+          allIngredients={allIngredients}
           showIngredientsModal={showIngredientsModal}
           onSetShowIngredientsModal={onSetShowIngredientsModal}
           selectedOrderIngredients={selectedOrderIngredients}

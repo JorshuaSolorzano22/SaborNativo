@@ -1,31 +1,65 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useParams, notFound } from "next/navigation"
 import { ArrowLeft, ShoppingCart, Plus, Minus } from "lucide-react"
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "../../../firebaseConfig"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ProductCard } from "@/components/features/product/ProductCard" 
-import { products } from "@/lib/data" 
+import { FirebaseProductCard } from "@/components/features/product/FirebaseProductCard" 
+import { useProducts, FirebaseProduct } from "@/hooks/useProducts"
+import { useCart } from "@/hooks/useCart" 
 
 export default function ProductDetailPage() {
   const params = useParams()
-  const productId = Number.parseInt(params.id as string)
+  const productId = params.id as string
+  const { products } = useProducts()
+  const { addToCart } = useCart()
 
-  const product = products.find((p) => p.id === productId)
-
+  const [product, setProduct] = useState<FirebaseProduct | null>(null)
+  const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
 
-  if (!product) {
-    notFound();
-  }
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        setLoading(true)
+        const productDoc = await getDoc(doc(db, "producto", productId))
+        
+        if (productDoc.exists()) {
+          const productData = productDoc.data()
+          setProduct({
+            id: productDoc.id,
+            nombre: productData.nombre || '',
+            descripcion: productData.descripcion || '',
+            precio: productData.precio || 0
+          })
+        } else {
+          notFound()
+        }
+      } catch (error) {
+        console.error("Error al cargar producto:", error)
+        notFound()
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (productId) {
+      loadProduct()
+    }
+  }, [productId])
 
   const handleAddToCart = () => {
-    console.log(`Agregando ${quantity} unidades de ${product.name} al carrito`)
-    setQuantity(1)
+    if (product) {
+      addToCart(product, quantity)
+      console.log(`Agregando ${quantity} unidades de ${product.nombre} al carrito`)
+      setQuantity(1)
+    }
   }
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1)
@@ -34,6 +68,18 @@ export default function ProductDetailPage() {
   const relatedProducts = products
     .filter((p) => p.id !== productId)
     .slice(0, 3)
+
+  if (loading) {
+    return (
+      <div className="bg-brand-background min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-primary"></div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    notFound()
+  }
 
   return (
     <div className="bg-brand-background min-h-screen">
@@ -67,8 +113,8 @@ export default function ProductDetailPage() {
           {}
           <div className="aspect-square relative">
             <Image
-              src={product.image || "/placeholder.svg"}
-              alt={product.name}
+              src="/placeholder.jpg"
+              alt={product.nombre}
               fill
               className="object-cover rounded-lg shadow-lg"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -79,10 +125,10 @@ export default function ProductDetailPage() {
           <div className="flex flex-col space-y-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-4 text-brand-foreground">
-                {product.name}
+                {product.nombre}
               </h1>
               <p className="text-4xl font-bold mb-6 text-brand-primary">
-                ₡{product.price.toLocaleString()}
+                ₡{product.precio.toLocaleString()}
               </p>
             </div>
 
@@ -91,7 +137,7 @@ export default function ProductDetailPage() {
                 Descripción
               </h2>
               <p className="text-lg leading-relaxed text-brand-foreground">
-                {product.description}
+                {product.descripcion}
               </p>
             </div>
 
@@ -108,7 +154,7 @@ export default function ProductDetailPage() {
                   <DialogHeader>
                     <DialogTitle className="text-brand-foreground">Agregar al carrito</DialogTitle>
                     <DialogDescription className="text-brand-foreground/80">
-                      Selecciona la cantidad de {product.name} que deseas agregar
+                      Selecciona la cantidad de {product.nombre} que deseas agregar
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 pt-4">
@@ -126,7 +172,7 @@ export default function ProductDetailPage() {
 
                     <div className="text-center">
                       <p className="text-lg font-semibold text-brand-foreground">
-                        Total: ₡{(product.price * quantity).toLocaleString()}
+                        Total: ₡{(product.precio * quantity).toLocaleString()}
                       </p>
                     </div>
                     
@@ -148,9 +194,8 @@ export default function ProductDetailPage() {
             Productos relacionados
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* PASO 3: Reutilizamos el componente ProductCard */}
             {relatedProducts.map((relatedProduct) => (
-              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              <FirebaseProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}
           </div>
         </section>
