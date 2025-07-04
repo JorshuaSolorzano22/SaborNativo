@@ -30,8 +30,16 @@ export default function LoginPage() {
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data()
         localStorage.setItem("user", JSON.stringify(userData))
-        alert("Inicio de sesión exitoso")
-        router.push("/")
+
+                const isAdmin = email.trim().toLowerCase().endsWith("@admin")
+        if (isAdmin) {
+          alert("Sesión de administrador iniciada de manera exitosa")
+          router.push("/admin")
+        } else {
+          alert("Inicio de sesión exitoso")
+          router.push("/")
+        }
+        
       } else {
         alert("Credenciales incorrectas")
       }
@@ -73,7 +81,13 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" style={{ color: "#5C4A3B" }}>Correo electrónico</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="space-y-2">
@@ -87,13 +101,25 @@ export default function LoginPage() {
                     required
                     className="pr-12"
                   />
-                  <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setShowPassword(!showPassword)} style={{ color: "#7A8751" }}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ color: "#7A8751" }}
+                  >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
               </div>
 
-              <Button type="submit" disabled={isLoading} className="w-full h-12 text-white font-semibold rounded-lg" style={{ backgroundColor: "#7A8751" }}>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 text-white font-semibold rounded-lg"
+                style={{ backgroundColor: "#7A8751" }}
+              >
                 {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
             </form>
