@@ -1,43 +1,140 @@
+import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
+import { db } from "../../firebaseConfig"
 import { Order, ProductIngredients } from "./types"
 
-export const mockOrders: Order[] = [
-  {
-    id: "001",
-    client: "María González",
-    status: "Pendiente de realizar",
-    paymentStatus: "Pendiente de pago",
-    products: [
-      { name: "Empanadas de carne", quantity: 12, price: 2500 },
-      { name: "Tamales", quantity: 6, price: 3000 },
-    ],
-    deliveryNotes: "Entregar antes de las 2 PM",
-    total: 48000,
-  },
-  {
-    id: "002",
-    client: "Carlos Rodríguez",
-    status: "Completado",
-    paymentStatus: "Pagado",
-    products: [
-      { name: "Arepas rellenas", quantity: 8, price: 2000 },
-      { name: "Chicha morada", quantity: 2, price: 1500 },
-    ],
-    deliveryNotes: "Cliente prefiere entrega en la mañana",
-    total: 19000,
-  },
-  {
-    id: "003",
-    client: "Ana Martínez",
-    status: "Entregado",
-    paymentStatus: "Pagado",
-    products: [
-      { name: "Sancocho", quantity: 1, price: 15000 },
-      { name: "Yuca frita", quantity: 3, price: 2500 },
-    ],
-    deliveryNotes: "Entregar en oficina, piso 3",
-    total: 22500,
-  },
-]
+// Función auxiliar para formatear fechas de Firebase
+export const formatFirebaseDate = (timestamp: any): string => {
+  if (!timestamp) return "Sin fecha"
+  
+  try {
+    let date: Date
+    
+    if (timestamp.toDate) {
+      // Es un Timestamp de Firebase
+      date = timestamp.toDate()
+    } else if (timestamp.seconds) {
+      // Es un objeto con segundos
+      date = new Date(timestamp.seconds * 1000)
+    } else {
+      // Es una fecha normal
+      date = new Date(timestamp)
+    }
+    
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } catch (error) {
+    console.error("Error formatting date:", error)
+    return "Fecha inválida"
+  }
+}
+
+// Función para cargar pedidos desde Firebase
+export const loadOrdersFromFirebase = async (): Promise<Order[]> => {
+  try {
+    const ordersCollection = collection(db, "pedido")
+    const ordersSnapshot = await getDocs(ordersCollection)
+    
+    const orders: Order[] = ordersSnapshot.docs.map(doc => {
+      const data = doc.data()
+      
+      // Transformar los productos de Firebase al formato esperado
+      const products = data.productos?.map((producto: any) => ({
+        name: producto.nombre,
+        quantity: producto.cantidad,
+        price: producto.precioUnitario
+      })) || []
+      
+      // Calcular el total si no está disponible
+      const total = data.totalPedido || products.reduce((sum: number, product: any) => 
+        sum + (product.price * product.quantity), 0
+      )
+      
+      return {
+        id: doc.id,
+        client: data.cliente,
+        status: data.estadoPedido,
+        paymentStatus: data.estadoFacturacion,
+        products: products,
+        deliveryNotes: data.notasEntrega || "",
+        total: total,
+        fecha: data.fecha
+      }
+    })
+    
+    // Ordenar por fecha más reciente primero
+    return orders.sort((a, b) => {
+      if (!a.fecha && !b.fecha) return 0
+      if (!a.fecha) return 1
+      if (!b.fecha) return -1
+      
+      try {
+        const dateA = a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)
+        const dateB = b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)
+        return dateB.getTime() - dateA.getTime()
+      } catch {
+        return 0
+      }
+    })
+  } catch (error) {
+    console.error("Error al cargar pedidos desde Firebase:", error)
+    return []
+  }
+}
+
+// Función para actualizar un pedido en Firebase
+export const updateOrderInFirebase = async (orderId: string, updateData: Partial<any>) => {
+  try {
+    const orderRef = doc(db, "pedido", orderId)
+    await updateDoc(orderRef, updateData)
+    return true
+  } catch (error) {
+    console.error("Error al actualizar pedido:", error)
+    return false
+  }
+}
+
+// Función para actualizar los productos de un pedido en Firebase
+export const updateOrderProductsInFirebase = async (orderId: string, products: any[], newTotal: number) => {
+  try {
+    const orderRef = doc(db, "pedido", orderId)
+    
+    // Transformar productos al formato de Firebase
+    const firebaseProducts = products.map(product => ({
+      idProducto: product.id || '',
+      nombre: product.name,
+      cantidad: product.quantity,
+      precioUnitario: product.price
+    }))
+    
+    await updateDoc(orderRef, {
+      productos: firebaseProducts,
+      totalPedido: newTotal
+    })
+    
+    return true
+  } catch (error) {
+    console.error("Error al actualizar productos del pedido:", error)
+    return false
+  }
+}
+
+// Función para eliminar un pedido de Firebase
+export const deleteOrderFromFirebase = async (orderId: string) => {
+  try {
+    const orderRef = doc(db, "pedido", orderId)
+    await deleteDoc(orderRef)
+    return true
+  } catch (error) {
+    console.error("Error al eliminar pedido:", error)
+    return false
+  }
+}
+
 
 export const productIngredients: ProductIngredients = {
   "Empanadas de carne": [

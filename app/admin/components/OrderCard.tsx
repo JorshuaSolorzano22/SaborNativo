@@ -1,4 +1,4 @@
-import { ChevronDown, Edit, Calculator, Check } from "lucide-react"
+import { ChevronDown, Edit, Calculator, Check, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Order, OrderStatus, PaymentStatus } from "../types"
-import { statusColors, paymentColors } from "../data"
+import { statusColors, paymentColors, formatFirebaseDate } from "../data"
 import EditOrderModal from "./EditOrderModal"
 import IngredientsModal from "./IngredientsModal"
 
@@ -58,6 +58,12 @@ export default function OrderCard({
               <div>
                 <h3 className="font-medium text-stone-800">Pedido #{order.id}</h3>
                 <p className="text-sm text-stone-600">{order.client}</p>
+                {order.fecha && (
+                  <div className="flex items-center space-x-1 text-xs text-stone-500 mt-1">
+                    <Calendar className="h-3 w-3" />
+                    <span>{formatFirebaseDate(order.fecha)}</span>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-3">
