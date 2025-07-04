@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import { Order, OrderStatus, PaymentStatus } from "../types"
-import { loadOrdersFromFirebase, updateOrderInFirebase, deleteOrderFromFirebase, updateOrderProductsInFirebase } from "../data"
+import { Order, OrderStatus, PaymentStatus, Ingredient } from "../types"
+import { loadOrdersFromFirebase, updateOrderInFirebase, deleteOrderFromFirebase, updateOrderProductsInFirebase, loadIngredientsFromFirebase } from "../data"
 
 export function useAdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([])
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set())
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const [showIngredientsModal, setShowIngredientsModal] = useState(false)
@@ -12,23 +13,27 @@ export function useAdminDashboard() {
   const [error, setError] = useState<string>("")
   const [selectedFilter, setSelectedFilter] = useState<string>("all")
 
-  // Cargar pedidos al inicializar
+  // Cargar pedidos e ingredientes al inicializar
   useEffect(() => {
-    const loadOrders = async () => {
+    const loadData = async () => {
       setIsLoading(true)
       setError("")
       try {
-        const firebaseOrders = await loadOrdersFromFirebase()
+        const [firebaseOrders, firebaseIngredients] = await Promise.all([
+          loadOrdersFromFirebase(),
+          loadIngredientsFromFirebase()
+        ])
         setOrders(firebaseOrders)
+        setIngredients(firebaseIngredients)
       } catch (err) {
-        setError("Error al cargar los pedidos")
-        console.error("Error loading orders:", err)
+        setError("Error al cargar los datos")
+        console.error("Error loading data:", err)
       } finally {
         setIsLoading(false)
       }
     }
 
-    loadOrders()
+    loadData()
   }, [])
 
   const toggleExpanded = (orderId: string) => {
@@ -126,11 +131,15 @@ export function useAdminDashboard() {
     setIsLoading(true)
     setError("")
     try {
-      const firebaseOrders = await loadOrdersFromFirebase()
+      const [firebaseOrders, firebaseIngredients] = await Promise.all([
+        loadOrdersFromFirebase(),
+        loadIngredientsFromFirebase()
+      ])
       setOrders(firebaseOrders)
+      setIngredients(firebaseIngredients)
     } catch (err) {
-      setError("Error al cargar los pedidos")
-      console.error("Error loading orders:", err)
+      setError("Error al cargar los datos")
+      console.error("Error loading data:", err)
     } finally {
       setIsLoading(false)
     }
@@ -148,6 +157,7 @@ export function useAdminDashboard() {
 
   return {
     orders: filteredOrders,
+    ingredients,
     expandedOrders,
     editingOrder,
     showIngredientsModal,

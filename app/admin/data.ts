@@ -1,6 +1,6 @@
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
 import { db } from "../../firebaseConfig"
-import { Order, ProductIngredients } from "./types"
+import { Order, ProductIngredients, Ingredient } from "./types"
 
 // Función auxiliar para formatear fechas de Firebase
 export const formatFirebaseDate = (timestamp: any): string => {
@@ -135,6 +135,30 @@ export const deleteOrderFromFirebase = async (orderId: string) => {
   }
 }
 
+// Función para cargar todos los ingredientes desde Firebase
+export const loadIngredientsFromFirebase = async (): Promise<Ingredient[]> => {
+  try {
+    const ingredientsCollection = collection(db, "ingrediente")
+    const ingredientsSnapshot = await getDocs(ingredientsCollection)
+    
+    const ingredients: Ingredient[] = ingredientsSnapshot.docs.map(doc => {
+      const data = doc.data()
+      
+      return {
+        name: data.nombre,
+        quantity: 0, // Cantidad inicial en 0 para entrada manual
+        unit: data.medida,
+        cost: data.precio
+      }
+    })
+    
+    // Ordenar alfabéticamente por nombre
+    return ingredients.sort((a, b) => a.name.localeCompare(b.name))
+  } catch (error) {
+    console.error("Error al cargar ingredientes desde Firebase:", error)
+    return []
+  }
+}
 
 export const productIngredients: ProductIngredients = {
   "Empanadas de carne": [

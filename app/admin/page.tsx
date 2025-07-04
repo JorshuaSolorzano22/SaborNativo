@@ -3,12 +3,12 @@
 import AdminHeader from "./components/AdminHeader"
 import AdminFooter from "./components/AdminFooter"
 import OrdersList from "./components/OrdersList"
-import { productIngredients } from "./data"
 import { useAdminDashboard } from "./hooks/useAdminDashboard"
 
 export default function AdminDashboard() {
   const {
     orders,
+    ingredients,
     expandedOrders,
     editingOrder,
     showIngredientsModal,
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
           onRemoveProduct={removeProduct}
           onSetEditingOrder={setEditingOrder}
           onSetSelectedOrderIngredients={setSelectedOrderIngredients}
-          productIngredients={productIngredients}
+          allIngredients={ingredients}
           showIngredientsModal={showIngredientsModal}
           onSetShowIngredientsModal={setShowIngredientsModal}
           selectedOrderIngredients={selectedOrderIngredients}
