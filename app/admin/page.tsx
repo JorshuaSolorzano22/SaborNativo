@@ -33,7 +33,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600 mb-4"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-olive-600 mb-4"></div>
           <p className="text-stone-600">Cargando pedidos...</p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
             <select
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value)}
-              className="px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500"
             >
               <option value="all">Todos los pedidos</option>
               <option value="pending">Pendientes</option>
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
             </select>
             <button
               onClick={refreshOrders}
-              className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+              className="bg-olive-600 text-white px-4 py-2 rounded-lg hover:bg-olive-700 transition-colors"
             >
               Actualizar
             </button>
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded hover:bg-olive-700">
             <strong>Error:</strong> {error}
           </div>
         )}

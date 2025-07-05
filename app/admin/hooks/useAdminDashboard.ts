@@ -47,11 +47,11 @@ export function useAdminDashboard() {
   }
 
   const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
-    // Actualizar en Firebase
+
     const success = await updateOrderInFirebase(orderId, { estadoPedido: newStatus })
     
     if (success) {
-      // Actualizar estado local
+
       setOrders(orders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order)))
     } else {
       setError("Error al actualizar el estado del pedido")
@@ -59,11 +59,11 @@ export function useAdminDashboard() {
   }
 
   const updatePaymentStatus = async (orderId: string, newStatus: PaymentStatus) => {
-    // Actualizar en Firebase
+
     const success = await updateOrderInFirebase(orderId, { estadoFacturacion: newStatus })
     
     if (success) {
-      // Actualizar estado local
+ 
       setOrders(orders.map((order) => (order.id === orderId ? { ...order, paymentStatus: newStatus } : order)))
     } else {
       setError("Error al actualizar el estado de facturación")
@@ -71,11 +71,11 @@ export function useAdminDashboard() {
   }
 
   const finishOrder = async (orderId: string) => {
-    // Eliminar de Firebase
+
     const success = await deleteOrderFromFirebase(orderId)
     
     if (success) {
-      // Actualizar estado local
+
       setOrders(orders.filter((order) => order.id !== orderId))
     } else {
       setError("Error al finalizar el pedido")
@@ -91,7 +91,7 @@ export function useAdminDashboard() {
         updatedProducts[productIndex] = { ...updatedProducts[productIndex], quantity: newQuantity }
         const newTotal = updatedProducts.reduce((sum, product) => sum + product.price * product.quantity, 0)
         
-        // Actualizar en Firebase
+
         updateOrderProductsInFirebase(orderId, updatedProducts, newTotal)
           .catch(err => {
             console.error("Error updating products in Firebase:", err)
@@ -112,7 +112,7 @@ export function useAdminDashboard() {
         const updatedProducts = order.products.filter((_, index: number) => index !== productIndex)
         const newTotal = updatedProducts.reduce((sum: number, product) => sum + product.price * product.quantity, 0)
         
-        // Actualizar en Firebase
+ 
         updateOrderProductsInFirebase(orderId, updatedProducts, newTotal)
           .catch(err => {
             console.error("Error updating products in Firebase:", err)

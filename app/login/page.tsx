@@ -9,7 +9,7 @@ import AuthCard from "./AuthCard"
 import LoginForm from "./LoginForm"
 import RegisterForm from "./RegisterForm"
 import { useAuthForms } from "./useAuthForms"
-import { authenticateUserFromFirestore, createUserInFirestore } from "../admin/data"
+import { authenticateUserFromFirestore, createUserInFirestore, isAdminUser } from "../admin/data"
 import { useAuth } from "@/hooks/useAuth"
 import { useRouter } from "next/navigation"
 
@@ -19,11 +19,16 @@ export default function LoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Redirige si ya está autenticado (pero espera a saber si es admin o no)
+    // Redirige si ya está autenticado
     if (isAuthenticated && user?.correo) {
-      if (user.correo.endsWith("@admin.com")) {
+      const isAdmin = isAdminUser(user.correo)
+      console.log("🔍 Usuario autenticado detectado:", user.correo, isAdmin ? "(ADMIN)" : "(USER)")
+      
+      if (isAdmin) {
+        console.log("🔄 Redirigiendo a admin...")
         router.push("/admin")
       } else {
+        console.log("🔄 Redirigiendo a página principal...")
         router.push("/")
       }
     }
@@ -33,18 +38,25 @@ export default function LoginPage() {
     e.preventDefault()
     f.setIsLoading(true)
     f.setError("")
+    
+    console.log("🔍 Intentando login con:", f.loginEmail)
     const r = await authenticateUserFromFirestore(f.loginEmail, f.loginPassword)
 
     if (r.success && r.user) {
+      console.log("✅ Login exitoso para:", r.user.correo)
       login(r.user)
 
-      // Redirigir dependiendo del correo
-      if (r.user.correo?.endsWith("@admin.com")) {
+      // Redirigir dependiendo del tipo de usuario
+      const isAdmin = isAdminUser(r.user.correo)
+      if (isAdmin) {
+        console.log("🔄 Usuario admin detectado, redirigiendo a /admin")
         router.push("/admin")
       } else {
+        console.log("🔄 Usuario normal detectado, redirigiendo a /")
         router.push("/")
       }
     } else {
+      console.log("❌ Login fallido:", r.error)
       f.setError(r.error || "Error de autenticación")
     }
     f.setIsLoading(false)

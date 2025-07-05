@@ -192,7 +192,12 @@ export const createOrderInFirebase = async (orderData: {
   }
 }
 
-// Función para autenticar usuario desde la colección Users
+// Función para verificar si un usuario es administrador
+export const isAdminUser = (email: string): boolean => {
+  return email?.endsWith("@admin.com") || email?.endsWith("@admin")
+}
+
+// Función para autenticar usuario desde Firestore
 export const authenticateUserFromFirestore = async (email: string, password: string) => {
   try {
     console.log("🔍 Intentando autenticar usuario:", email)
@@ -209,7 +214,9 @@ export const authenticateUserFromFirestore = async (email: string, password: str
     
     if (userDoc) {
       const userData = userDoc.data()
-      console.log("✅ Usuario encontrado:", userData.nombre, userData.apellidos)
+      const isAdmin = isAdminUser(userData.correo)
+      console.log("✅ Usuario encontrado:", userData.nombre, userData.apellidos, isAdmin ? "(ADMIN)" : "(USER)")
+      
       return {
         success: true,
         user: {
@@ -218,7 +225,8 @@ export const authenticateUserFromFirestore = async (email: string, password: str
           apellidos: userData.apellidos,
           correo: userData.correo,
           telefono: userData.telefono || "",
-          fullName: `${userData.nombre} ${userData.apellidos}`
+          fullName: `${userData.nombre} ${userData.apellidos}`,
+          isAdmin: isAdmin
         }
       }
     } else {
