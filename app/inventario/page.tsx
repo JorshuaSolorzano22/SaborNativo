@@ -40,9 +40,9 @@ export default function InventarioPage() {
       const data = docSnap.data()
       return {
         id: docSnap.id,
-        nombre: Array.isArray(data.nombre) ? data.nombre[0] : data.nombre || "",
-        unidad: Array.isArray(data.medida) ? data.medida[0] : data.medida || "",
-        precio: Array.isArray(data.precio) ? data.precio[0] : data.precio || 0,
+        nombre: data.nombre || "",
+        unidad: data.medida || "",
+        precio: data.precio || 0,
       }
     })
 
@@ -53,16 +53,15 @@ export default function InventarioPage() {
     cargarIngredientes()
   }, [])
 
-  const limpiarForm = () =>
-    setForm({ nombre: "", unidad: "", precio: 0 })
+  const limpiarForm = () => setForm({ nombre: "", unidad: "", precio: 0 })
 
   const agregarIngrediente = async () => {
-    if (!form.nombre) return
+    if (!form.nombre || !form.unidad || !form.precio) return
 
     await addDoc(colRef, {
-      nombre: [form.nombre],
-      medida: [form.unidad],
-      precio: [form.precio],
+      nombre: form.nombre,
+      medida: form.unidad,
+      precio: form.precio,
     })
 
     limpiarForm()
@@ -73,9 +72,9 @@ export default function InventarioPage() {
     if (!editId) return
 
     await updateDoc(doc(colRef, editId), {
-      nombre: [form.nombre],
-      medida: [form.unidad],
-      precio: [form.precio],
+      nombre: form.nombre,
+      medida: form.unidad,
+      precio: form.precio,
     })
 
     setEditId(null)
@@ -204,6 +203,6 @@ export default function InventarioPage() {
           </table>
         </div>
       </main>
-    </>
-  )
+    </>
+  )
 }
