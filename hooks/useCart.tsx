@@ -10,7 +10,7 @@ export interface CartItem {
   descripcion: string;
   precio: number;
   quantity: number;
-  image?: string; // Imagen opcional para compatibilidad
+  imagen: string; 
 }
 
 interface CartContextType {
@@ -56,7 +56,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prevItems, { 
         ...product, 
         quantity,
-        image: "/placeholder.jpg" // Imagen por defecto
+        imagen: product.imagen || "/placeholder.jpg" // Imagen por defecto
       }];
     });
   };
@@ -89,7 +89,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// 3. Creamos el Hook personalizado para consumir el contexto
+// 3. Creamos el Hook para consumir el contexto
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {

@@ -30,7 +30,7 @@ export function useProducts() {
           id: doc.id,
           nombre: data.nombre || '',
           descripcion: data.descripcion || '',
-           imagen: data.imagen || "/placeholder.jpg" ,
+          imagen: data.imagen || "/placeholder.jpg" ,
           precio: data.precio || 0
          
         }
