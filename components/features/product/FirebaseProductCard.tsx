@@ -10,7 +10,7 @@ interface FirebaseProductCardProps {
 }
 
 export function FirebaseProductCard({ product, showDescription = false }: FirebaseProductCardProps) {
-  // Imagen por defecto si no hay imagen específica
+  
   const defaultImage = "/placeholder.jpg";
   
   return (
@@ -18,7 +18,7 @@ export function FirebaseProductCard({ product, showDescription = false }: Fireba
       <CardContent className="p-0">
         <div className="relative w-full h-64">
           <Image
-            src={defaultImage}
+            src={product.imagen}
             alt={product.nombre}
             fill
             className="object-cover"
