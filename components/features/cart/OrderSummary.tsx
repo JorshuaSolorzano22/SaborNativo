@@ -31,7 +31,7 @@ export function OrderSummary() {
     window.open(whatsappUrl, "_blank");
 
     // Opcional: limpiar el carrito después de enviar el pedido
-    // clearCart(); 
+    clearCart(); 
   };
 
   return (

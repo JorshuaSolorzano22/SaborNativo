@@ -1,16 +1,21 @@
 "use client";
 
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/sections/shared/SectionHeader";
 import { ProductCard } from "@/components/features/product/ProductCard";
-import { Product, products } from "@/lib/data";
+import { Product, getProductosConImagenes } from "@/lib/data";
 
 export function FeaturedProductsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [products, setProducts] = useState<Product[]>([]);
+
   const itemsPerSlide = 3;
   const totalSlides = Math.ceil(products.length / itemsPerSlide);
+
+  useEffect(() => {
+    getProductosConImagenes().then(setProducts);
+  }, []);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % totalSlides);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
