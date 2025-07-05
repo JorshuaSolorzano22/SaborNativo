@@ -1,58 +1,48 @@
-// ✅ Archivo: app/product/[id].tsx con productos relacionados sincronizados al carrusel
+
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useParams, notFound } from "next/navigation";
-import { ArrowLeft, ShoppingCart, Plus, Minus } from "lucide-react";
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useParams, notFound } from "next/navigation"
+import { ArrowLeft, ShoppingCart, Plus, Minus } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import { ProductCard } from "@/components/features/product/ProductCard";
-import {
-  getProductoConImagenPorId,
-  getProductosConImagenes,
-  Product,
-} from "@/lib/data";
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ProductCard } from "@/components/features/product/ProductCard" 
+import { products } from "@/lib/data" 
 
 export default function ProductDetailPage() {
-  const params = useParams();
-  const productId = Number.parseInt(params.id as string);
+  const params = useParams()
+  const productId = Number.parseInt(params.id as string)
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [quantity, setQuantity] = useState(1);
+  const product = products.find((p) => p.id === productId)
 
-  useEffect(() => {
-    getProductoConImagenPorId(productId).then((producto) => {
-      if (!producto) return notFound();
-      setProduct(producto);
-    });
+  const [quantity, setQuantity] = useState(1)
 
-    getProductosConImagenes().then((productos) => {
-      const filtrados = productos.filter((p) => p.id !== productId).slice(0, 3);
-      setRelatedProducts(filtrados);
-    });
-  }, [productId]);
-
-  if (!product) return <p className="text-center py-12">Cargando producto...</p>;
+  if (!product) {
+    notFound();
+  }
 
   const handleAddToCart = () => {
-    console.log(`Agregando ${quantity} unidades de ${product.name} al carrito`);
-    setQuantity(1);
-  };
+    console.log(`Agregando ${quantity} unidades de ${product.name} al carrito`)
+    setQuantity(1)
+  }
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+  if (loading) {
+    return (
+      <div className="bg-brand-background min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-primary"></div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    notFound()
+  }
 
   return (
     <div className="bg-brand-background min-h-screen">
@@ -81,8 +71,8 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           <div className="aspect-square relative">
             <Image
-              src={product.image || "/placeholder.svg"}
-              alt={product.name}
+              src="/placeholder.jpg"
+              alt={product.nombre}
               fill
               className="object-cover rounded-lg shadow-lg"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -92,17 +82,17 @@ export default function ProductDetailPage() {
           <div className="flex flex-col space-y-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-4 text-brand-foreground">
-                {product.name}
+                {product.nombre}
               </h1>
               <p className="text-4xl font-bold mb-6 text-brand-primary">
-                ₡{product.price.toLocaleString()}
+                ₡{product.precio.toLocaleString()}
               </p>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold mb-3 text-brand-foreground">Descripción</h2>
               <p className="text-lg leading-relaxed text-brand-foreground">
-                {product.description}
+                {product.descripcion}
               </p>
             </div>
 
@@ -118,7 +108,7 @@ export default function ProductDetailPage() {
                   <DialogHeader>
                     <DialogTitle className="text-brand-foreground">Agregar al carrito</DialogTitle>
                     <DialogDescription className="text-brand-foreground/80">
-                      Selecciona la cantidad de {product.name} que deseas agregar
+                      Selecciona la cantidad de {product.nombre} que deseas agregar
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 pt-4">
@@ -135,7 +125,7 @@ export default function ProductDetailPage() {
                     </div>
                     <div className="text-center">
                       <p className="text-lg font-semibold text-brand-foreground">
-                        Total: ₡{(product.price * quantity).toLocaleString()}
+                        Total: ₡{(product.precio * quantity).toLocaleString()}
                       </p>
                     </div>
                     <DialogTrigger asChild>
@@ -153,10 +143,11 @@ export default function ProductDetailPage() {
         <section className="mt-16 md:mt-24">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedProducts.map((relatedProduct) => (
-              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              <FirebaseProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}
           </div>
         </section>
+        
       </main>
     </div>
   );

@@ -15,6 +15,7 @@ export interface Order {
   products: Product[]
   deliveryNotes: string
   total: number
+  fecha?: any // Puede ser timestamp de Firebase o Date
 }
 
 export interface Ingredient {

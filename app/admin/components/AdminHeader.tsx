@@ -1,3 +1,6 @@
+"use client"
+
+import Link from "next/link"
 import { User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -15,20 +18,26 @@ export default function AdminHeader() {
           </div>
 
           {/* Navegación */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
-              Pedidos
-            </Button>
-            <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
-              Inventario
-            </Button>
-            <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
-              Control de pedidos
-            </Button>
+          <nav className="hidden md:flex items-center space-x-2">
+            <Link href="/pedidos">
+              <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
+                Pedidos
+              </Button>
+            </Link>
+
+            <Link href="/inventario">
+              <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
+                Inventario
+              </Button>
+            </Link>
           </nav>
 
           {/* Usuario */}
-          <Button variant="ghost" size="icon" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-stone-600 hover:text-olive-600 hover:bg-olive-50"
+          >
             <User className="h-5 w-5" />
           </Button>
         </div>
