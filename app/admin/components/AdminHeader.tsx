@@ -17,12 +17,16 @@ export default function AdminHeader() {
 
           {/* Navegación */}
           <nav className="hidden md:flex items-center space-x-2">
+            <Link href="/admin">
             <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
               Pedidos
             </Button>
+            </Link>
+            <Link href="/inventario">
             <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
               Inventario
             </Button>
+            </Link>
           </nav>
 
           {/* Usuario */}

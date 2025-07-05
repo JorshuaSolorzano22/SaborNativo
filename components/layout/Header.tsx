@@ -12,7 +12,6 @@ const navLinks = [
   { href: "#nosotros", label: "Nosotros" },
   { href: "#recetas", label: "Recetas" },
   { href: "#contacto", label: "Contacto" },
-  { href: "/admin", label: "Admin" },
 ]
 
 const Logo = () => (
@@ -21,7 +20,7 @@ const Logo = () => (
       <path d="M12 2C12 2 7 4 7 12C7 16 9 18 12 18C15 18 17 16 17 12C17 4 12 2 12 2Z" fill="#7A8751" />
       <path d="M12 18C12 18 8 16 8 12" stroke="#5C4A3B" strokeWidth="1" fill="none" />
     </svg>
-    <h1 className="text-2xl font-bold">Sabor nativo</h1>
+    <h1 className="text-2xl font-bold">Sabor Nativo</h1>
   </Link>
 )
 
