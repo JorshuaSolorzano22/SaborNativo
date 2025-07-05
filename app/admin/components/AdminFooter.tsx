@@ -10,7 +10,7 @@ export default function AdminFooter() {
             <p className="text-sm text-stone-600">Sistema de Administración Sabor Nativo v1.0</p>
             <p className="text-sm text-olive-600 font-medium italic">"Sabores que nacen de nuestra tierra"</p>
           </div>
-          <Link href={"/login"}>
+          <Link href={"/"}>
             <Button variant="outline" className="border-stone-300 text-stone-600 hover:bg-stone-50 bg-transparent">
               Cerrar sesión
             </Button>
