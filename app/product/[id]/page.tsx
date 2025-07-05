@@ -7,7 +7,6 @@ import { useParams, notFound } from "next/navigation"
 import { ArrowLeft, ShoppingCart, Plus, Minus } from "lucide-react"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../../../firebaseConfig"
-
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FirebaseProductCard } from "@/components/features/product/FirebaseProductCard" 
