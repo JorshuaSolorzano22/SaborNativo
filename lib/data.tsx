@@ -1,5 +1,13 @@
 import { CreditCard, Layers, Leaf, MapPin, Phone, Mail, Clock } from "lucide-react";
 
+export interface Product {
+  id: string
+  nombre: string
+  descripcion: string
+  imagen: string
+  precio: number
+}
+
 export interface Recipe {
   title: string;
   description: string;

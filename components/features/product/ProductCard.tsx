@@ -1,4 +1,4 @@
-/**import Image from "next/image";
+/*import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,12 +23,16 @@ export function ProductCard({ product, showDescription = false }: ProductCardPro
         </div>
         <div className="p-4">
           <h4 className="font-semibold text-lg mb-2 text-brand-foreground">{product.name}</h4>
+          {showDescription && (
+            <p className="text-sm mb-3 text-brand-foreground h-12">{product.description}</p>
+          )}
           <p className="text-2xl font-bold mb-3 text-brand-primary">
             ₡{product.price.toLocaleString()}
           </p>
-          <Link href={`/product/${product.id}`}>
+          <Link href={`/product`}>
+
             <Button className="w-full bg-brand-primary text-white hover:bg-brand-primary/90">
-              Ver detalles
+              {showDescription ? "Ver detalles" : "Ver más"}
             </Button>
           </Link>
         </div>
@@ -36,4 +40,4 @@ export function ProductCard({ product, showDescription = false }: ProductCardPro
     </Card>
   );
 }
-**/
+*/

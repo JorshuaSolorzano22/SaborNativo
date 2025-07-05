@@ -6,7 +6,7 @@ import Image from "next/image"
 import { useParams, notFound } from "next/navigation"
 import { ArrowLeft, ShoppingCart, Plus, Minus } from "lucide-react"
 import { doc, getDoc } from "firebase/firestore"
-import { db } from "../../../firebaseConfig"
+import { db } from "@/firebaseConfig"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FirebaseProductCard } from "@/components/features/product/FirebaseProductCard" 
@@ -35,6 +35,7 @@ export default function ProductDetailPage() {
             id: productDoc.id,
             nombre: productData.nombre || '',
             descripcion: productData.descripcion || '',
+            imagen: productData.imagen || "/placeholder.jpg" ,
             precio: productData.precio || 0
           })
         } else {
@@ -112,7 +113,7 @@ export default function ProductDetailPage() {
           {}
           <div className="aspect-square relative">
             <Image
-              src="/placeholder.jpg"
+              src={product.imagen}
               alt={product.nombre}
               fill
               className="object-cover rounded-lg shadow-lg"
