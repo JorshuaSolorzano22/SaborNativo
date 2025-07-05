@@ -9,6 +9,7 @@ interface User {
   correo: string;
   telefono: string;
   fullName: string;
+  isAdmin?: boolean;
 }
 
 export function useAuth() {
@@ -50,6 +51,7 @@ export function useAuth() {
     user,
     loading,
     isAuthenticated: !!user,
+    isAdmin: user?.isAdmin || false,
     login,
     logout,
     userName: user?.fullName || "Usuario"
