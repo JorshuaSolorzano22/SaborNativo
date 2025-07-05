@@ -15,7 +15,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
     <Card className="bg-white">
       <CardContent className="p-4 flex items-center space-x-4">
         <div className="w-20 h-20 relative flex-shrink-0">
-          <Image src={item.image || "/placeholder.jpg"} alt={item.nombre} fill className="object-cover rounded" />
+          <Image src={item.imagen || "/placeholder.jpg"} alt={item.nombre} fill className="object-cover rounded" />
         </div>
         <div className="flex-grow">
           <h3 className="font-semibold text-lg text-brand-foreground">{item.nombre}</h3>
