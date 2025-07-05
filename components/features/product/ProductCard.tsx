@@ -1,4 +1,4 @@
-import Image from "next/image";
+/**import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,3 +36,4 @@ export function ProductCard({ product, showDescription = false }: ProductCardPro
     </Card>
   );
 }
+**/

@@ -23,8 +23,7 @@ const Logo = () => (
     </svg>
     <h1 className="text-2xl font-bold">Sabor nativo</h1>
   </Link>
-);
-
+)
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

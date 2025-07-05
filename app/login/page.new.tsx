@@ -92,8 +92,6 @@ export default function LoginPage() {
       return
     }
 
-    console.log("🔍 Intentando crear usuario:", { nombre, apellidos, correo, telefono })
-
     try {
       const result = await createUserInFirestore({
         nombre: nombre.trim(),
@@ -103,8 +101,6 @@ export default function LoginPage() {
         contraseña: contrasena
       })
 
-      console.log("🔍 Resultado de creación:", result)
-
       if (result.success) {
         setSuccessMessage("✅ Usuario creado exitosamente. Ya puedes iniciar sesión.")
         // Limpiar formulario
@@ -113,25 +109,12 @@ export default function LoginPage() {
         setTelefono("")
         setCorreo("")
         setContrasena("")
-        setError("") // Limpiar errores también
       } else {
         setError(result.error || "Error al crear usuario")
-        setSuccessMessage("") // Limpiar mensaje de éxito si hay error
       }
     } catch (err: any) {
       console.error("❌ Error en registro:", err)
-      
-      // Manejo más específico de errores
-      if (err.code === 'permission-denied') {
-        setError("No tienes permisos para crear usuarios. Verifica la configuración de Firestore.")
-      } else if (err.code === 'network-request-failed') {
-        setError("Error de conexión. Verifica tu conexión a internet.")
-      } else if (err.message) {
-        setError(`Error: ${err.message}`)
-      } else {
-        setError("Error desconocido al crear usuario")
-      }
-      setSuccessMessage("")
+      setError("Error de conexión")
     } finally {
       setIsLoading(false)
     }

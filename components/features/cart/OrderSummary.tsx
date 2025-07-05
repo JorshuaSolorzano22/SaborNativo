@@ -56,10 +56,6 @@ export function OrderSummary() {
           .map((item) => `${item.nombre} x${item.quantity} - ₡${(item.precio * item.quantity).toLocaleString()}`)
           .join("\n");
 
-<<<<<<< HEAD
-    // Opcional: limpiar el carrito después de enviar el pedido
-    clearCart(); 
-=======
         const paymentMethodText = {
           sinpe: "SINPE móvil",
           transfer: "Transferencia bancaria",
@@ -84,7 +80,6 @@ export function OrderSummary() {
     } catch (err) {
       console.error("Error al procesar pedido:", err)
     }
->>>>>>> 50d25fcfd75090befb83a09519900b73357e829f
   };
 
   return (

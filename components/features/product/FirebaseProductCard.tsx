@@ -10,7 +10,7 @@ interface FirebaseProductCardProps {
 }
 
 export function FirebaseProductCard({ product, showDescription = false }: FirebaseProductCardProps) {
-
+  // Imagen por defecto si no hay imagen específica
   const defaultImage = "/placeholder.jpg";
   
   return (
