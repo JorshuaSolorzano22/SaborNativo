@@ -29,12 +29,12 @@ export function HeroSection() {
               <HeroLogo />
               <div>
                 <h1 className="text-5xl md:text-6xl font-bold leading-tight text-brand-foreground">Sabor</h1>
-                <h1 className="text-5xl md:text-6xl font-bold leading-tight -mt-3 text-brand-foreground">nativo</h1>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight -mt-3 text-brand-foreground">Nativo</h1>
               </div>
             </div>
             <div>
               <p className="text-2xl md:text-3xl leading-relaxed font-bold max-w-lg mx-auto lg:mx-0 text-brand-foreground">
-                Sabores que nacen del alma de la cocina
+                "Sabores que nacen del alma de la cocina"
               </p>
             </div>
           </div>

@@ -204,6 +204,6 @@ export default function InventarioPage() {
           </table>
         </div>
       </main>
-    </>
-  )
+    </>
+  )
 }
