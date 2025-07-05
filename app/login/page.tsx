@@ -15,21 +15,35 @@ import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const f = useAuthForms()
-  const { isAuthenticated, login } = useAuth()
+  const { isAuthenticated, login, user } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (isAuthenticated) router.push("/")
-  }, [isAuthenticated, router])
+    // Redirige si ya está autenticado (pero espera a saber si es admin o no)
+    if (isAuthenticated && user?.correo) {
+      if (user.correo.endsWith("@admin.com")) {
+        router.push("/admin")
+      } else {
+        router.push("/")
+      }
+    }
+  }, [isAuthenticated, user, router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     f.setIsLoading(true)
     f.setError("")
     const r = await authenticateUserFromFirestore(f.loginEmail, f.loginPassword)
+
     if (r.success && r.user) {
       login(r.user)
-      router.push("/")
+
+      // Redirigir dependiendo del correo
+      if (r.user.correo?.endsWith("@admin.com")) {
+        router.push("/admin")
+      } else {
+        router.push("/")
+      }
     } else {
       f.setError(r.error || "Error de autenticación")
     }
