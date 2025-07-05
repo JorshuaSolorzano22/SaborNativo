@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from "firebase/firestore"
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc, query, where } from "firebase/firestore"
 import { db } from "../../firebaseConfig"
 import { Order, ProductIngredients, Ingredient } from "./types"
 
@@ -192,42 +192,110 @@ export const createOrderInFirebase = async (orderData: {
   }
 }
 
-export const productIngredients: ProductIngredients = {
-  "Empanadas de carne": [
-    { name: "Harina de maíz", quantity: 500, unit: "g", cost: 2000 },
-    { name: "Carne molida", quantity: 300, unit: "g", cost: 8000 },
-    { name: "Cebolla", quantity: 1, unit: "unidad", cost: 500 },
-    { name: "Aceite", quantity: 100, unit: "ml", cost: 800 },
-  ],
-  Tamales: [
-    { name: "Masa de maíz", quantity: 400, unit: "g", cost: 3000 },
-    { name: "Cerdo", quantity: 250, unit: "g", cost: 7000 },
-    { name: "Hojas de plátano", quantity: 12, unit: "unidades", cost: 1500 },
-    { name: "Sal", quantity: 10, unit: "g", cost: 100 },
-  ],
-  "Arepas rellenas": [
-    { name: "Harina precocida", quantity: 300, unit: "g", cost: 1800 },
-    { name: "Queso", quantity: 150, unit: "g", cost: 4000 },
-    { name: "Pollo", quantity: 200, unit: "g", cost: 5000 },
-    { name: "Aguacate", quantity: 1, unit: "unidad", cost: 2000 },
-  ],
-  "Chicha morada": [
-    { name: "Maíz morado", quantity: 200, unit: "g", cost: 3000 },
-    { name: "Piña", quantity: 100, unit: "g", cost: 1000 },
-    { name: "Canela", quantity: 5, unit: "g", cost: 500 },
-    { name: "Azúcar", quantity: 50, unit: "g", cost: 300 },
-  ],
-  Sancocho: [
-    { name: "Carne de res", quantity: 400, unit: "g", cost: 12000 },
-    { name: "Yuca", quantity: 300, unit: "g", cost: 2000 },
-    { name: "Plátano verde", quantity: 2, unit: "unidades", cost: 1500 },
-    { name: "Cilantro", quantity: 20, unit: "g", cost: 500 },
-  ],
-  "Yuca frita": [
-    { name: "Yuca", quantity: 500, unit: "g", cost: 3000 },
-    { name: "Aceite", quantity: 200, unit: "ml", cost: 1600 },
-    { name: "Sal", quantity: 5, unit: "g", cost: 50 },
-  ],
+// Función para autenticar usuario desde la colección Users
+export const authenticateUserFromFirestore = async (email: string, password: string) => {
+  try {
+    console.log("🔍 Intentando autenticar usuario:", email)
+    const usersCollection = collection(db, "Users")
+    const usersSnapshot = await getDocs(usersCollection)
+    console.log("📊 Documentos encontrados:", usersSnapshot.docs.length)
+    
+    // Buscar usuario por email y contraseña
+    const userDoc = usersSnapshot.docs.find(doc => {
+      const data = doc.data()
+      console.log("🔍 Verificando usuario:", data.correo, "contraseña:", data.contraseña ? "✓" : "✗")
+      return data.correo === email && data.contraseña === password
+    })
+    
+    if (userDoc) {
+      const userData = userDoc.data()
+      console.log("✅ Usuario encontrado:", userData.nombre, userData.apellidos)
+      return {
+        success: true,
+        user: {
+          id: userDoc.id,
+          nombre: userData.nombre,
+          apellidos: userData.apellidos,
+          correo: userData.correo,
+          telefono: userData.telefono || "",
+          fullName: `${userData.nombre} ${userData.apellidos}`
+        }
+      }
+    } else {
+      console.log("❌ Usuario no encontrado con esas credenciales")
+      return { success: false, error: "Credenciales incorrectas" }
+    }
+  } catch (error) {
+    console.error("❌ Error al autenticar usuario:", error)
+    return { success: false, error: "Error de conexión" }
+  }
+}
+
+// Función para crear usuario en Firestore
+export const createUserInFirestore = async (userData: {
+  nombre: string;
+  apellidos: string;
+  correo: string;
+  telefono: string;
+  contraseña: string;
+}) => {
+  try {
+    console.log("🔍 Creando usuario:", userData.correo)
+    
+    // Validaciones básicas
+    if (!userData.nombre || !userData.apellidos || !userData.correo || !userData.contraseña) {
+      console.log("❌ Faltan campos obligatorios")
+      return { success: false, error: "Todos los campos obligatorios deben estar completos" }
+    }
+    
+    const usersCollection = collection(db, "Users")
+    console.log("🔍 Obteniendo colección Users...")
+    
+    // Verificar si el email ya existe usando query
+    const q = query(usersCollection, where("correo", "==", userData.correo))
+    const querySnapshot = await getDocs(q)
+    
+    if (!querySnapshot.empty) {
+      console.log("❌ El email ya existe en la base de datos")
+      return { success: false, error: "El email ya está registrado" }
+    }
+    
+    console.log("✅ Email disponible, creando usuario...")
+    
+    const newUserData = {
+      nombre: userData.nombre.trim(),
+      apellidos: userData.apellidos.trim(),
+      correo: userData.correo.trim().toLowerCase(),
+      telefono: userData.telefono.trim() || "",
+      contraseña: userData.contraseña,
+      fechaCreacion: new Date(),
+      activo: true
+    }
+    
+    const docRef = await addDoc(usersCollection, newUserData)
+    
+    console.log("✅ Usuario creado exitosamente con ID:", docRef.id)
+    return { 
+      success: true, 
+      userId: docRef.id,
+      message: "Usuario creado exitosamente"
+    }
+  } catch (error: any) {
+    console.error("❌ Error detallado al crear usuario:", {
+      message: error.message,
+      code: error.code,
+      details: error
+    })
+    
+    // Retornar error más específico
+    if (error.code === 'permission-denied') {
+      return { success: false, error: "No tienes permisos para crear usuarios" }
+    } else if (error.code === 'network-request-failed') {
+      return { success: false, error: "Error de conexión a la base de datos" }
+    } else {
+      return { success: false, error: `Error al crear usuario: ${error.message}` }
+    }
+  }
 }
 
 export const statusColors = {

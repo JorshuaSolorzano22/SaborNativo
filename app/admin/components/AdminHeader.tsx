@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 "use client"
 
 import Link from "next/link"
 import { User } from "lucide-react"
+=======
+import { User, Users, Bug } from "lucide-react"
+>>>>>>> 46fa39dc4903baddc82a27f4244f0bcf26f4791f
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function AdminHeader() {
   return (
@@ -18,10 +23,11 @@ export default function AdminHeader() {
           </div>
 
           {/* Navegación */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-2">
             <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
               Pedidos
             </Button>
+<<<<<<< HEAD
 
             <Link href="/inventario">
               <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
@@ -31,6 +37,10 @@ export default function AdminHeader() {
 
             <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
               Control de pedidos
+=======
+            <Button variant="ghost" className="text-stone-600 hover:text-olive-600 hover:bg-olive-50">
+              Inventario
+>>>>>>> 46fa39dc4903baddc82a27f4244f0bcf26f4791f
             </Button>
           </nav>
 

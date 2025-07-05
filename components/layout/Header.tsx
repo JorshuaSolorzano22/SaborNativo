@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { Menu, ShoppingCart, User, X, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/useAuth"
+import { useCart } from "@/hooks/useCart"
 
 const navLinks = [
   { href: "#inicio", label: "Inicio" },
@@ -25,20 +27,11 @@ const Logo = () => (
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [userName, setUserName] = useState("")
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      const parsed = JSON.parse(userData)
-      setUserName(parsed.nombre || "")
-    }
-  }, [])
+  const { user, isAuthenticated, logout } = useAuth()
+  const { totalItems } = useCart()
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    setUserName("")
-    window.location.reload()
+    logout()
   }
 
   return (
@@ -56,20 +49,32 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-2 md:space-x-4">
-            {userName && (
+            {isAuthenticated && user ? (
               <>
-                <span className="text-sm italic text-brand-foreground mr-2">Hola, {userName}</span>
+                <span className="text-sm italic text-brand-foreground mr-2">
+                  Hola, {user.nombre}
+                </span>
                 <Button variant="ghost" size="icon" onClick={handleLogout} title="Cerrar sesión">
                   <LogOut className="h-4 w-4 text-brand-foreground" />
                 </Button>
               </>
+            ) : (
+              <Button asChild variant="ghost" size="icon" className="hover:bg-brand-green/10">
+                <Link href="/login"><User /></Link>
+              </Button>
             )}
-            <Button asChild variant="ghost" size="icon" className="hover:bg-brand-green/10">
-              <Link href="/cart"><ShoppingCart /></Link>
+            
+            <Button asChild variant="ghost" size="icon" className="hover:bg-brand-green/10 relative">
+              <Link href="/cart">
+                <ShoppingCart />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-brand-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
             </Button>
-            <Button asChild variant="ghost" size="icon" className="hover:bg-brand-green/10">
-              <Link href="/login"><User /></Link>
-            </Button>
+            
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>

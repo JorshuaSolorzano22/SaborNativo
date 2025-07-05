@@ -1,51 +1,137 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { collection, getDocs, query, where } from "firebase/firestore"
-import { db } from "../../firebaseConfig"
+import { authenticateUserFromFirestore, createUserInFirestore } from "../admin/data"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  // Estados para login
+  const [loginEmail, setLoginEmail] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
+  
+  // Estados para registro
+  const [nombre, setNombre] = useState("")
+  const [apellidos, setApellidos] = useState("")
+  const [telefono, setTelefono] = useState("")
+  const [correo, setCorreo] = useState("")
+  const [contrasena, setContrasena] = useState("")
+  
+  // Estados comunes
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
+  
+  const { isAuthenticated, login } = useAuth()
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/")
+    }
+  }, [isAuthenticated, router])
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
+
+    console.log("🔍 Intentando login con:", loginEmail)
 
     try {
-      const usersRef = collection(db, "Users")
-      const q = query(usersRef, where("correo", "==", email), where("contraseña", "==", password))
-      const querySnapshot = await getDocs(q)
-
-      if (!querySnapshot.empty) {
-        const userData = querySnapshot.docs[0].data()
-        localStorage.setItem("user", JSON.stringify(userData))
-
-                const isAdmin = email.trim().toLowerCase().endsWith("@admin")
-        if (isAdmin) {
-          alert("Sesión de administrador iniciada de manera exitosa")
-          router.push("/admin")
-        } else {
-          alert("Inicio de sesión exitoso")
-          router.push("/")
-        }
-        
+      const result = await authenticateUserFromFirestore(loginEmail, loginPassword)
+      
+      if (result.success && result.user) {
+        console.log("✅ Login exitoso:", result.user)
+        login(result.user)
+        router.push("/")
       } else {
-        alert("Credenciales incorrectas")
+        console.log("❌ Login fallido:", result.error)
+        setError(result.error || "Error de autenticación")
       }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error)
-      alert("Error al iniciar sesión")
+    } catch (err: any) {
+      console.error("❌ Error en login:", err)
+      setError("Error de conexión")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+    setSuccessMessage("")
+
+    // Validaciones básicas
+    if (!nombre.trim() || !apellidos.trim() || !correo.trim() || !contrasena.trim()) {
+      setError("Todos los campos obligatorios deben completarse")
+      setIsLoading(false)
+      return
+    }
+
+    if (contrasena.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres")
+      setIsLoading(false)
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(correo)) {
+      setError("Ingresa un email válido")
+      setIsLoading(false)
+      return
+    }
+
+    console.log("🔍 Intentando crear usuario:", { nombre, apellidos, correo, telefono })
+
+    try {
+      const result = await createUserInFirestore({
+        nombre: nombre.trim(),
+        apellidos: apellidos.trim(),
+        correo: correo.trim().toLowerCase(),
+        telefono: telefono.trim(),
+        contraseña: contrasena
+      })
+
+      console.log("🔍 Resultado de creación:", result)
+
+      if (result.success) {
+        setSuccessMessage("✅ Usuario creado exitosamente. Ya puedes iniciar sesión.")
+        // Limpiar formulario
+        setNombre("")
+        setApellidos("")
+        setTelefono("")
+        setCorreo("")
+        setContrasena("")
+        setError("") // Limpiar errores también
+      } else {
+        setError(result.error || "Error al crear usuario")
+        setSuccessMessage("") // Limpiar mensaje de éxito si hay error
+      }
+    } catch (err: any) {
+      console.error("❌ Error en registro:", err)
+      
+      // Manejo más específico de errores
+      if (err.code === 'permission-denied') {
+        setError("No tienes permisos para crear usuarios. Verifica la configuración de Firestore.")
+      } else if (err.code === 'network-request-failed') {
+        setError("Error de conexión. Verifica tu conexión a internet.")
+      } else if (err.message) {
+        setError(`Error: ${err.message}`)
+      } else {
+        setError("Error desconocido al crear usuario")
+      }
+      setSuccessMessage("")
     } finally {
       setIsLoading(false)
     }
@@ -60,7 +146,7 @@ export default function LoginPage() {
         </Link>
 
         <Card className="shadow-xl border-0" style={{ backgroundColor: "white" }}>
-          <CardHeader className="text-center pb-8">
+          <CardHeader className="text-center pb-6">
             <div className="flex justify-center mb-4">
               <div className="flex items-center">
                 <div className="mr-3">
@@ -72,66 +158,187 @@ export default function LoginPage() {
                 <CardTitle className="text-2xl font-bold" style={{ color: "#5C4A3B" }}>Sabor nativo</CardTitle>
               </div>
             </div>
-            <CardDescription className="text-base" style={{ color: "#5C4A3B" }}>
-              Inicia sesión para acceder a tu cuenta
-            </CardDescription>
           </CardHeader>
 
           <CardContent className="px-8 pb-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" style={{ color: "#5C4A3B" }}>Correo electrónico</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+            <Tabs defaultValue="login" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
+                <TabsTrigger value="register">Registrarse</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="login" className="space-y-4">
+                <CardDescription className="text-center text-base" style={{ color: "#5C4A3B" }}>
+                  Inicia sesión para acceder a tu cuenta
+                </CardDescription>
+                
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-red-600 text-sm">{error}</p>
+                  </div>
+                )}
 
-              <div className="space-y-2">
-                <Label htmlFor="password" style={{ color: "#5C4A3B" }}>Contraseña</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="pr-12"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{ color: "#7A8751" }}
+                {successMessage && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-green-600 text-sm">{successMessage}</p>
+                  </div>
+                )}
+                
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" style={{ color: "#5C4A3B" }}>Correo electrónico</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={loginEmail} 
+                      onChange={(e) => setLoginEmail(e.target.value)} 
+                      required 
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password" style={{ color: "#5C4A3B" }}>Contraseña</Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        required
+                        disabled={isLoading}
+                        className="pr-12"
+                      />
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="icon" 
+                        className="absolute right-2 top-1/2 -translate-y-1/2" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
+                        style={{ color: "#7A8751" }}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading} 
+                    className="w-full h-12 text-white font-semibold rounded-lg" 
+                    style={{ backgroundColor: "#7A8751" }}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
                   </Button>
-                </div>
-              </div>
+                </form>
+              </TabsContent>
+              
+              <TabsContent value="register" className="space-y-4">
+                <CardDescription className="text-center text-base" style={{ color: "#5C4A3B" }}>
+                  Crea una nueva cuenta para realizar pedidos
+                </CardDescription>
+                
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-red-600 text-sm">{error}</p>
+                  </div>
+                )}
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 text-white font-semibold rounded-lg"
-                style={{ backgroundColor: "#7A8751" }}
-              >
-                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
-              </Button>
-            </form>
+                {successMessage && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="text-green-600 text-sm">{successMessage}</p>
+                  </div>
+                )}
+                
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre" style={{ color: "#5C4A3B" }}>Nombre</Label>
+                    <Input 
+                      id="nombre" 
+                      type="text" 
+                      value={nombre} 
+                      onChange={(e) => setNombre(e.target.value)} 
+                      required 
+                      disabled={isLoading}
+                    />
+                  </div>
 
-            <div className="mt-6 text-center">
-              <span className="text-sm" style={{ color: "#5C4A3B" }}>
-                ¿No tienes cuenta?{" "}
-                <a href="/createUser" className="font-semibold hover:underline" style={{ color: "#7A8751" }}>
-                  Regístrate aquí
-                </a>
-              </span>
-            </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="apellidos" style={{ color: "#5C4A3B" }}>Apellidos</Label>
+                    <Input 
+                      id="apellidos" 
+                      type="text" 
+                      value={apellidos} 
+                      onChange={(e) => setApellidos(e.target.value)} 
+                      required 
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="telefono" style={{ color: "#5C4A3B" }}>Teléfono</Label>
+                    <Input 
+                      id="telefono" 
+                      type="tel" 
+                      value={telefono} 
+                      onChange={(e) => setTelefono(e.target.value)} 
+                      placeholder="8888-8888"
+                      disabled={isLoading}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="correo" style={{ color: "#5C4A3B" }}>Correo electrónico</Label>
+                    <Input 
+                      id="correo" 
+                      type="email" 
+                      value={correo} 
+                      onChange={(e) => setCorreo(e.target.value)} 
+                      required 
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="contrasena" style={{ color: "#5C4A3B" }}>Contraseña</Label>
+                    <div className="relative">
+                      <Input
+                        id="contrasena"
+                        type={showPassword ? "text" : "password"}
+                        value={contrasena}
+                        onChange={(e) => setContrasena(e.target.value)}
+                        required
+                        disabled={isLoading}
+                        className="pr-12"
+                        minLength={6}
+                      />
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="icon" 
+                        className="absolute right-2 top-1/2 -translate-y-1/2" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
+                        style={{ color: "#7A8751" }}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500">Mínimo 6 caracteres</p>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading} 
+                    className="w-full h-12 text-white font-semibold rounded-lg" 
+                    style={{ backgroundColor: "#7A8751" }}
+                  >
+                    {isLoading ? "Creando cuenta..." : "Crear cuenta"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
